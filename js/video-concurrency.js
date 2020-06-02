@@ -28,16 +28,6 @@ videojs.registerPlugin('simplegtm', function (options) {
 
     player.on('loadedmetadata', function () {
 
-        fetch(pingURL + `/rest/v1/user/${userid}/sessions`,
-            {
-                method: 'post'
-            }
-        )
-            .then(response => response.json())
-            .then(data => {
-                sessionId = data.sessionId;
-                console.log(sessionId)
-            });
 
         debug && console.log('++++ loadedmetadata +++ ');
     });
@@ -59,6 +49,26 @@ videojs.registerPlugin('simplegtm', function (options) {
         debug && console.log('+++ loadstart +++ ');
         firstPlay = true;
         percentsAlreadyTracked = [];
+        fetch(pingURL + `/rest/v1/user/${userid}/sessions`,
+            {
+                method: 'post'
+            }
+        )
+            .then(function (response) {
+                if (response.status >= 400 && response.status < 600) {
+                    throw new Error("Bad response from server");
+                }
+                return response.json();
+            })
+            .then(data => {
+                sessionId = data.sessionId
+            }).catch( err => {
+               // player.src("")
+                player.createModal('Exceeded allowed play');
+                debug && console.log('+++ Exceeded allowed play +++ ');
+
+            })
+
     });
 
     player.on('pause', function () {
@@ -100,8 +110,6 @@ videojs.registerPlugin('simplegtm', function (options) {
                 .then(response => response.json())
                 .then(data => console.log(data));
         }
-        console.log(currentTime)
-        console.log(Math.floor(currentTime / pingInterval))
     });
 
     function pushDataLayer(event, progressPosition) {
