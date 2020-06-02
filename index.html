@@ -1,0 +1,46 @@
+<html>
+
+<head>
+
+</head>
+
+
+<body>
+    <div style="max-width: 960px;">
+        <video-js id="player" data-account="6057984922001" data-player="fprFS9RfZ" data-embed="default" controls=""
+            data-video-id="6122702238001" data-playlist-id="" data-application-id="" class="vjs-fluid"></video-js>
+    </div>
+    <script src="https://players.brightcove.net/6057984922001/fprFS9RfZ_default/index.min.js"></script>
+    </script>
+    <script type="text/javascript" src="js/video-concurrency.js"></script>
+    <script type="text/javascript">
+
+        function getQuery(name, url) {
+            if (!url) url = window.location.href;
+            name = name.replace(/[\[\]]/g, '\\$&');
+            var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+                results = regex.exec(url);
+            if (!results) return null;
+            if (!results[2]) return '';
+            return decodeURIComponent(results[2].replace(/\+/g, ' '));
+        }
+        var user = getQuery('user')
+
+        var options = {
+            "pingInterval": 30,
+            "debug": true,
+            "user": user,
+            "pingURL": "http://concurrency-control.herokuapp.com"
+        };
+    </script>
+    <script>
+
+        videojs.getPlayer('player').simplegtm(options);
+
+
+
+    </script>
+
+</body>
+
+</html>
